@@ -53,8 +53,8 @@
       var marginTop = 100;
       var proportion = 1/4;
 
-      var mapHeight = 4044;
-      var mapWidth = 4013;
+      var mapWidth = 4044;
+      var mapHeight = 4013;
 
       var containerHeight = mapHeight * proportion + marginTop;
       var containerWidth = mapWidth * proportion;
@@ -85,7 +85,7 @@
       svg.append("svg:image")
         .attr('x', 0)
         .attr('y', marginTop)
-        .attr('height', containerHeight)
+        .attr('height', containerHeight - marginTop)
         .attr('width', containerWidth)
         .attr("xlink:href","resources/map.jpg")
 

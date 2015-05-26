@@ -58,18 +58,20 @@
 
       var containerHeight = mapHeight * proportion + marginTop;
       var containerWidth = mapWidth * proportion;
+
       var squaresN = 100;
+      var squareWidth = containerWidth / squaresN;
+      var squareHeight = containerHeight / squaresN;
+
 
       var xPosition = d3.scale.linear()
             .domain ([0, squaresN])
-            .range([0, containerWidth]);
+            .range([0, containerWidth] );
 
       var yPosition = d3.scale.linear()
             .domain ([0, squaresN])
-            .range([0, containerHeight - marginTop]);
+            .range([containerHeight - marginTop, 0]);
 
-      var squareWidth = containerWidth / squaresN;
-      var squareHeight = containerHeight / squaresN;
 
       var svg = d3.select("#viz").append("svg").attr("width", containerWidth).attr("height", containerHeight);
 
@@ -106,7 +108,7 @@
         squares
           .append('rect')
           .attr('x', function(d) { return xPosition(d.x) } )
-          .attr('y', function(d) { return marginTop + yPosition(d.y) } )
+          .attr('y', function(d) { return marginTop + yPosition(d.y) - squareHeight } )
           .attr('width', squareWidth)
           .attr('height', squareHeight)
           .attr('stroke', 'black')

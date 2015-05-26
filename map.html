@@ -40,6 +40,7 @@
   </head>
   <body>
     <p>This tool helps you mapping coordenates to park games.</p>
+    <textarea id=selected rows=4 cols=100></textarea>
     <div id="viz"></div>
     <script type="text/javascript">
 
@@ -95,8 +96,7 @@
         .attr('x', 0)
         .attr('y', 30)
         .attr('font-family', 'Helvetica')
-        .attr('font-size', '20px')
-        .text('Selected squares: ');
+        .attr('font-size', '20px');
 
       run();
 
@@ -122,9 +122,8 @@
 
       function addSelectedSquare(obj, d) {
         d3.select(obj).style("fill-opacity", 0.8);
-        selectedSquares.text(selectedSquares.text() + '(' + d.x + ', ' + d.y + '), ' );
+        document.getElementById('selected').innerHTML +=  '[' + d.x + ', ' + d.y + '], ';
       }
-
     </script>
   </body>
 </html>

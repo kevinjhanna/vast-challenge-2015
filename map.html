@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Park Map</title>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <style>
+      body { font-family: 'Helvetica'; }
+
+      .d3-tip {
+        line-height: 1;
+        font-weight: bold;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 2px;
+      }
+
+      /* Creates a small triangle extender for the tooltip */
+      .d3-tip:after {
+        box-sizing: border-box;
+        display: inline;
+        font-size: 10px;
+        width: 100%;
+        line-height: 1;
+        color: rgba(0, 0, 0, 0.8);
+        content: "\25BC";
+        position: absolute;
+        text-align: center;
+      }
+
+      /* Style northward tooltips differently */
+      .d3-tip.n:after {
+        margin: -1px 0 0 0;
+        top: 100%;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <p>This tool helps you mapping coordenates to park games.</p>
+    <div id="viz"></div>
+    <script type="text/javascript">
+
+      var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
+          return "<strong>X:</strong> <span style='color:red'>" + d.x + "</span><br> <strong>Y:</strong> <span style='color:red'>" + d.y + "</span>";
+        })
+
+      var marginTop = 100;
+      var proportion = 1/4;
+
+      var mapHeight = 4044;
+      var mapWidth = 4013;
+
+      var containerHeight = mapHeight * proportion + marginTop;
+      var containerWidth = mapWidth * proportion;
+      var squaresN = 100;
+
+      var xPosition = d3.scale.linear()
+            .domain ([0, squaresN])
+            .range([0, containerWidth]);
+
+      var yPosition = d3.scale.linear()
+            .domain ([0, squaresN])
+            .range([0, containerHeight - marginTop]);
+
+      var squareWidth = containerWidth / squaresN;
+      var squareHeight = containerHeight / squaresN;
+
+      var svg = d3.select("#viz").append("svg").attr("width", containerWidth).attr("height", containerHeight);
+
+      var data = [];
+      for(var i = 0; i < squaresN; i++) {
+        for(var j = 0; j < squaresN; j++) {
+          data.push({ x: i, y: j})
+        }
+      }
+
+      svg.call(tip);
+
+      svg.append("svg:image")
+        .attr('x', 0)
+        .attr('y', marginTop)
+        .attr('height', containerHeight)
+        .attr('width', containerWidth)
+        .attr("xlink:href","resources/map.jpg")
+
+      var selectedSquares = svg.append('text')
+        .attr('x', 0)
+        .attr('y', 30)
+        .attr('font-family', 'Helvetica')
+        .attr('font-size', '20px')
+        .text('Selected squares: ');
+
+      run();
+
+      function run() {
+        var squares = svg.selectAll("rect")
+          .data(data)
+          .enter()
+
+        squares
+          .append('rect')
+          .attr('x', function(d) { return xPosition(d.x) } )
+          .attr('y', function(d) { return marginTop + yPosition(d.y) } )
+          .attr('width', squareWidth)
+          .attr('height', squareHeight)
+          .attr('stroke', 'black')
+          .attr('stroke-width', 1)
+          .style('fill', d3.rgb(55,55,55))
+          .on('mouseover', tip.show)
+          .on('mouseout', tip.hide)
+          .on('click', function(d,i) { addSelectedSquare(this, d) })
+          .style('fill-opacity', 0.5);
+      }
+
+      function addSelectedSquare(obj, d) {
+        d3.select(obj).style("fill-opacity", 0.8);
+        selectedSquares.text(selectedSquares.text() + '(' + d.x + ', ' + d.y + '), ' );
+      }
+
+    </script>
+  </body>
+</html>

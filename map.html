@@ -98,10 +98,8 @@
         .attr('font-family', 'Helvetica')
         .attr('font-size', '20px');
 
-      run();
-
       function run() {
-        var squares = svg.selectAll("rect")
+        var squares = svg.selectAll('rect')
           .data(data)
           .enter()
 
@@ -113,17 +111,50 @@
           .attr('height', squareHeight)
           .attr('stroke', 'black')
           .attr('stroke-width', 1)
+          .attr('stroke-opacity', 0.6)
           .style('fill', d3.rgb(55,55,55))
           .on('mouseover', tip.show)
           .on('mouseout', tip.hide)
           .on('click', function(d,i) { addSelectedSquare(this, d) })
-          .style('fill-opacity', 0.5);
+          .style('fill-opacity', 0.1);
       }
 
       function addSelectedSquare(obj, d) {
         d3.select(obj).style("fill-opacity", 0.8);
         document.getElementById('selected').innerHTML +=  '[' + d.x + ', ' + d.y + '], ';
       }
+
+      var checkins;
+      d3.csv('https://gist.githubusercontent.com/kevinjhanna/be3da3b8882af1d17f55/raw/87e25b9ceb9e90edd4ff90194dbaa9ab20739168/checkins.csv', function(d) {
+        return {
+          x: +d.x,
+          y: +d.y
+        };
+      }, function(error, rows) {
+        checkins = rows;
+        runCheckins();
+        run();
+      });
+
+      function runCheckins() {
+        var checkinSquares = svg.append('g').selectAll('rect')
+          .data(checkins)
+          .enter();
+
+        console.log(checkins[3]);
+
+        checkinSquares
+          .append('rect')
+          .attr('x', function(d) { console.log('foo');return xPosition(d.x) } )
+          .attr('y', function(d) { return marginTop + yPosition(d.y) - squareHeight } )
+          .attr('width', squareWidth)
+          .attr('height', squareHeight)
+          .style('fill', 'White')
+          .attr('stroke', 'Green')
+          .attr('stroke-width', 4)
+          .style('fill-opacity', 0.9);
+      }
+
     </script>
   </body>
 </html>
